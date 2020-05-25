@@ -6,6 +6,10 @@
         android:id="@+id/Find_Friends"
         app:showAsAction="never"></item>
 
+    <item android:title="Create New Group"
+        android:id="@+id/Create_Group"
+        app:showAsAction="never"></item>
+
     <item android:title="Settings"
         android:id="@+id/Settings"
         app:showAsAction="never"></item>
