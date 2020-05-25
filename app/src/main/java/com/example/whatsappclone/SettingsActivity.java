@@ -1,6 +1,7 @@
 package com.example.whatsappclone;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -36,6 +37,9 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setTitle("Settings");
         UserName=(EditText)findViewById(R.id.UserNameEditText);
         UserStatus=(EditText)findViewById(R.id.StatusEditText);
         ProfilePic=(ImageView)findViewById(R.id.ProfileImage);

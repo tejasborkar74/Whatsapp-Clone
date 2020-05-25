@@ -1,6 +1,7 @@
 package com.example.whatsappclone;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -35,6 +36,9 @@ public class registerationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setTitle("Create New Account");
 
         userEmail=(EditText)findViewById(R.id.emailRegisterEditText);
         userPassword=(EditText)findViewById(R.id.passwordRegisterEditText);

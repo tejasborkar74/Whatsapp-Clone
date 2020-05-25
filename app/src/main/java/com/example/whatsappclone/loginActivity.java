@@ -1,6 +1,7 @@
 package com.example.whatsappclone;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -31,6 +32,9 @@ public class loginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setTitle("Login");
         loginButton=(Button)findViewById(R.id.loginButton);
         signInButton=(Button)findViewById(R.id.SignupButton);
         userEmail=(EditText)findViewById(R.id.emailEditText);
