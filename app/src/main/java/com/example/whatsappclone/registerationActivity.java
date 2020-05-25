@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class registerationActivity extends AppCompatActivity {
 
@@ -25,7 +27,7 @@ public class registerationActivity extends AppCompatActivity {
     TextView AlreadyHaveAccount;
     Button CreateAccountButton;
     ProgressDialog progressDialog;
-
+    DatabaseReference rootRef;
     FirebaseAuth userAuth;
 
 
@@ -40,6 +42,8 @@ public class registerationActivity extends AppCompatActivity {
         AlreadyHaveAccount=(TextView)findViewById(R.id.AlreadyTextView);
         userAuth=FirebaseAuth.getInstance();
         progressDialog=new ProgressDialog(this);
+        rootRef= FirebaseDatabase.getInstance().getReference();
+
 
         AlreadyHaveAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,6 +93,9 @@ public class registerationActivity extends AppCompatActivity {
                     {
                         if(task.isSuccessful())
                         {
+                            String currentUserID=userAuth.getCurrentUser().getUid();
+                            rootRef.child("User").child(currentUserID).setValue("");
+
                             sendUserToMain();
                             Toast.makeText(registerationActivity.this,"Account Created Successfully...",Toast.LENGTH_LONG).show();
                             progressDialog.dismiss();

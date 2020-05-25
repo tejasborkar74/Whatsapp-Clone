@@ -21,7 +21,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class loginActivity extends AppCompatActivity {
 
-    FirebaseUser currentUser;
     EditText userEmail,userPassword;
     TextView ForgetPasswordLink;
     Button loginButton,signInButton;
@@ -39,7 +38,6 @@ public class loginActivity extends AppCompatActivity {
         ForgetPasswordLink=(TextView)findViewById(R.id.ForgePasswordtTextView);
         userAuth=FirebaseAuth.getInstance();
         progressDialog=new ProgressDialog(this);
-        currentUser=userAuth.getCurrentUser();
 
 
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -63,12 +61,15 @@ public class loginActivity extends AppCompatActivity {
     {
         String Email=userEmail.getText().toString();
         String Password=userPassword.getText().toString();
-
-        if(TextUtils.isEmpty(Email))
+        if(TextUtils.isEmpty(Email) && TextUtils.isEmpty(Password))
+        {
+            Toast.makeText(loginActivity.this,"Please enter the Email Address and Password",Toast.LENGTH_LONG).show();
+        }
+        else if(TextUtils.isEmpty(Email))
         {
             Toast.makeText(loginActivity.this,"Please enter the Email Address",Toast.LENGTH_LONG).show();
         }
-        if(TextUtils.isEmpty(Password))
+        else if(TextUtils.isEmpty(Password))
         {
             Toast.makeText(loginActivity.this,"Please enter the Password",Toast.LENGTH_LONG).show();
         }
@@ -76,7 +77,7 @@ public class loginActivity extends AppCompatActivity {
         {
             progressDialog.setTitle("Logging In");
             progressDialog.setMessage("Please wait...");
-            progressDialog.setCanceledOnTouchOutside(true);
+            progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
 
             userAuth.signInWithEmailAndPassword(Email,Password)
