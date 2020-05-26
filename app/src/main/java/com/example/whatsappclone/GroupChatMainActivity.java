@@ -78,6 +78,7 @@ public class GroupChatMainActivity extends AppCompatActivity {
                 }
                 arrayList.clear();//clear current list
                 arrayList.addAll(set);
+                arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
