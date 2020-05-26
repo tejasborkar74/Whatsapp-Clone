@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,9 +14,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +26,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -37,6 +44,9 @@ public class SettingsActivity extends AppCompatActivity {
     FirebaseAuth userAuth;
     DatabaseReference rootRef;
     int GalleryPick=1;
+    StorageReference UserProfileImagesRef;
+
+    ProgressDialog loadingBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +62,8 @@ public class SettingsActivity extends AppCompatActivity {
         userAuth=FirebaseAuth.getInstance();
         CurrentUserID=userAuth.getCurrentUser().getUid();
         rootRef= FirebaseDatabase.getInstance().getReference();
+        UserProfileImagesRef= FirebaseStorage.getInstance().getReference().child("Profile Images");
+        loadingBar = new ProgressDialog(SettingsActivity.this);
 
         UpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +106,62 @@ public class SettingsActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE)
         {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+            if(resultCode==RESULT_OK)
+            {
+
+                loadingBar.setTitle("Set Profile Image");
+                loadingBar.setMessage("Please wait...");
+                loadingBar.setCanceledOnTouchOutside(false);
+                loadingBar.show();
+
+                //this resultURI contain croped image
+                Uri resultURI=result.getUri();
+
+                StorageReference filePath=UserProfileImagesRef.child(CurrentUserID + ".jpg");
+                filePath.putFile(resultURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+
+                        if(task.isSuccessful())
+                        {
+                            Toast.makeText(SettingsActivity.this,"Profile Pic Uploaded Successfully",Toast.LENGTH_LONG).show();
+                            //link of profile pic in storage ... we have to store it in DB
+                            String downloadedUrl = task.getResult().getStorage().getDownloadUrl().toString();
+
+                            //now save in database
+                            rootRef.child("User").child(CurrentUserID).child("image")
+                                    .setValue(downloadedUrl)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful())
+                                            {
+                                                Toast.makeText(SettingsActivity.this, "Image saved in Database successfully", Toast.LENGTH_SHORT).show();
+                                                loadingBar.dismiss();
+                                            }
+                                            else
+                                            {
+                                                loadingBar.dismiss();
+                                                String error=task.getException().toString();
+                                                Toast.makeText(SettingsActivity.this, "ERROR: "+error, Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+                        }
+                        else
+                        {
+                            loadingBar.dismiss();
+                            String error=task.getException().toString();
+                            Toast.makeText(SettingsActivity.this, "ERROR: " + error, Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+
+            }
         }
     }
 
@@ -113,7 +181,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     UserName.setText(retriveUserName);
                     UserStatus.setText(retriveUserStatus);
-
+                    Picasso.get().load(retriveDP).into(ProfilePic);
 
                 }
                 else if((dataSnapshot.child("name").exists()) && (dataSnapshot.hasChild("name")))//not image
