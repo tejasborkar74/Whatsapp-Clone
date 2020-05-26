@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText groupName=new EditText(this);
         groupName.setHint("Group Name");
 
+
         alertDialog.setView(groupName);
         alertDialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override

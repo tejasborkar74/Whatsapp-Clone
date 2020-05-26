@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/ProfileImage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="100dp"
         android:layout_marginTop="90dp"
@@ -22,19 +22,17 @@
 
     <EditText
         android:id="@+id/UserNameEditText"
-        android:layout_width="373dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="45dp"
         android:layout_marginEnd="20dp"
         android:drawableStart="@drawable/edit_profile"
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName"
-        android:background="@drawable/edit_text_border"
+        android:background="@drawable/text_border_extras"
         android:padding="10dp"
-
-
         android:textSize="24dp"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,7 +41,7 @@
 
     <EditText
         android:id="@+id/StatusEditText"
-        android:layout_width="373dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
@@ -52,7 +50,7 @@
         android:ems="10"
         android:hint="Status"
         android:inputType="textPersonName"
-        android:background="@drawable/edit_text_border"
+        android:background="@drawable/text_border_extras"
         android:padding="10dp"
         android:textSize="24sp"
         android:textStyle="normal"
