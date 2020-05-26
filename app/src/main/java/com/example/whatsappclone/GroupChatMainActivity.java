@@ -13,6 +13,8 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -56,6 +58,16 @@ public class GroupChatMainActivity extends AppCompatActivity {
         Initialise();
 
         RetriveAndDisplayGroups();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String groupName= adapterView.getItemAtPosition(i).toString();
+                Intent toGroupChatting=new Intent(getApplicationContext(),GroupChattingActivity.class);
+                toGroupChatting.putExtra("GroupName",groupName);
+                startActivity(toGroupChatting);
+            }
+        });
 
 
 

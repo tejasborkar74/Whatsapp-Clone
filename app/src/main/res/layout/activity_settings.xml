@@ -31,8 +31,11 @@
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName"
+        android:background="@drawable/edit_text_border"
+        android:padding="10dp"
 
-        android:textSize="24sp"
+
+        android:textSize="24dp"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,6 +52,8 @@
         android:ems="10"
         android:hint="Status"
         android:inputType="textPersonName"
+        android:background="@drawable/edit_text_border"
+        android:padding="10dp"
         android:textSize="24sp"
         android:textStyle="normal"
         app:layout_constraintEnd_toEndOf="parent"
