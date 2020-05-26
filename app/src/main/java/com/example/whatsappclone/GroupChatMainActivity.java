@@ -1,111 +1,83 @@
 package com.example.whatsappclone;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.text.Edits;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-    FirebaseUser currentUser;
+public class GroupChatMainActivity extends AppCompatActivity {
+
+    ListView listView ;
+    ArrayList<String> arrayList=new ArrayList<>();
+    ArrayAdapter<String> arrayAdapter;
+    DatabaseReference groupRef;
     FirebaseAuth userAuth;
     DatabaseReference rootRef;
-    Button chatButton,groupChatButton,contactButton;
-
-
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_group_chat_main);
+
+        ActionBar actionBar= getSupportActionBar();
+        actionBar.setTitle("Group Chats");
         userAuth=FirebaseAuth.getInstance();
-        currentUser=userAuth.getCurrentUser();
         rootRef= FirebaseDatabase.getInstance().getReference();
-        chatButton=(Button)findViewById(R.id.chatButton);
-        groupChatButton=(Button)findViewById(R.id.groupChatButton);
-        contactButton=(Button)findViewById(R.id.contactButton);
 
-        chatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendUserToChat();
-            }
-        });
-        groupChatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendUserToGroupChat();
-            }
-        });
+        groupRef= FirebaseDatabase.getInstance().getReference().child("Groups");
+
+        Initialise();
+
+        RetriveAndDisplayGroups();
+
+
 
 
     }
 
-    private void sendUserToGroupChat() {
-        Intent GroupChatIntent= new Intent(getApplicationContext(),GroupChatMainActivity.class);
-        startActivity(GroupChatIntent);
-    }
-
-    private void sendUserToChat()
+    private void RetriveAndDisplayGroups()
     {
-        Intent chatIntent= new Intent(getApplicationContext(),ChatsMainActivity.class);
-        startActivity(chatIntent);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if(currentUser==null)//not loged in
-        {
-            sendUserToLogin();
-        }
-        else
-        {
-            verifyTheUser();
-        }
-    }
-
-    private void verifyTheUser()
-    {
-        String currentUserID=userAuth.getCurrentUser().getUid();
-
-        rootRef.child("User").child(currentUserID).addValueEventListener(new ValueEventListener() {
+        groupRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                //Iterate through whole group in data base
+                Set<String> set = new HashSet<>();
 
-                //old user ...who have already set username and status
-                if((dataSnapshot.child("name").exists())) //here name is key of hash map use always same
+                Iterator iterator=dataSnapshot.getChildren().iterator();
+                while(iterator.hasNext())
                 {
-                    //Toast.makeText(MainActivity.this,"Welcome",Toast.LENGTH_LONG).show();
+                    set.add(((DataSnapshot)iterator.next()).getKey());
                 }
-                else
-                {
-                    //just signed up but not updated username
-                    sendUserToSettings();
-                }
+                arrayList.clear();//clear current list
+                arrayList.addAll(set);
             }
 
             @Override
@@ -115,8 +87,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void Initialise() {
+        listView=(ListView) findViewById(R.id.listView);
+        arrayAdapter=new ArrayAdapter<String>(this,android.R.layout.simple_expandable_list_item_1,arrayList);
 
+        listView.setAdapter(arrayAdapter);
+    }
 
+    //===========================================================MENU=========================================================
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -126,12 +104,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-         super.onOptionsItemSelected(item);
+        super.onOptionsItemSelected(item);
 
-         if(item.getItemId()==R.id.Settings)
-         {
-             sendUserToTempSettings();
-         }
+        if(item.getItemId()==R.id.Settings)
+        {
+            sendUserToSettings();
+        }
         if(item.getItemId()==R.id.Log_out)
         {
             userAuth.signOut();
@@ -145,11 +123,8 @@ public class MainActivity extends AppCompatActivity {
         {
             RequestNewGroup();
         }
-    return true;
+        return true;
     }
-
-
-
     private void RequestNewGroup()
     {
         AlertDialog.Builder alertDialog= new AlertDialog.Builder(this);
@@ -166,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 String setGroupName=groupName.getText().toString();
                 if(TextUtils.isEmpty(setGroupName))
                 {
-                    Toast.makeText(MainActivity.this, "Please enter group name", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GroupChatMainActivity.this, "Please enter group name", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
@@ -196,28 +171,22 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful())
                         {
-                            Toast.makeText(MainActivity.this, setGroupName+" is created successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GroupChatMainActivity.this, setGroupName+" is created successfully", Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
                             String error=task.getException().toString();
-                            Toast.makeText(MainActivity.this, "ERROR: " +error, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GroupChatMainActivity.this, "ERROR: " +error, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-   public void sendUserToTempSettings() {
-        Intent in= new Intent(getApplicationContext(),SettingsActivity.class);
-        startActivity(in);
-
-    }
-
     public void sendUserToSettings()
     {
         Intent i= new Intent(getApplicationContext(),SettingsActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(i);
-        finish();
+
     }
     public void sendUserToLogin()
     {
@@ -227,4 +196,5 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    //================================================================MENU=======================================================================
 }
