@@ -233,7 +233,7 @@ public class GroupChattingActivity extends AppCompatActivity {
         }
         if(item.getItemId()==R.id.Find_Friends)
         {
-
+            sendUserToFindFriend();
         }
         if(item.getItemId()==R.id.Create_Group)
         {
@@ -310,6 +310,12 @@ public class GroupChattingActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+    private void sendUserToFindFriend()
+    {
+        Intent ent= new Intent(getApplicationContext(),FindFriendsActivity.class);
+        startActivity(ent);
+
     }
 
     //================================================================MENU=======================================================================

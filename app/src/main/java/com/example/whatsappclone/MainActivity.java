@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(item.getItemId()==R.id.Find_Friends)
         {
-
+            sendUserToFindFriend();
         }
         if(item.getItemId()==R.id.Create_Group)
         {
@@ -232,5 +232,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    private void sendUserToFindFriend()
+    {
+        Intent ent= new Intent(getApplicationContext(),FindFriendsActivity.class);
+        startActivity(ent);
+
+    }
+
 
 }
