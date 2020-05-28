@@ -62,5 +62,21 @@
         android:textSize="18dp"
         />
 
+    <Button
+        android:id="@+id/cancel_chat_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/send_chat_request"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Decline Chat request"
+        android:textAllCaps="false"
+        android:textSize="18dp"
+        android:visibility="invisible"
+        />
+
 
 </RelativeLayout>

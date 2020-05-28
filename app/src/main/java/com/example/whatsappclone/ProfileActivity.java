@@ -26,7 +26,7 @@ public class ProfileActivity extends AppCompatActivity
     String receiverUserID,current_state,senderUserID;
     CircleImageView userProfileImage;
     TextView  userProfileName, userProfileStatus;
-    Button sendChatRequestButton;
+    Button sendChatRequestButton,cancelChatRequestButton;
     DatabaseReference userRef,chatRequestRef;
     FirebaseAuth userAuth;
 
@@ -43,6 +43,7 @@ public class ProfileActivity extends AppCompatActivity
         userProfileName=(TextView)findViewById(R.id.visit_user_name);
         userProfileStatus=(TextView)findViewById(R.id.visit_user_status);
         sendChatRequestButton=(Button)findViewById(R.id.send_chat_request);
+        cancelChatRequestButton=(Button)findViewById(R.id.cancel_chat_request);
         current_state="new";
 
         userRef= FirebaseDatabase.getInstance().getReference().child("User");
@@ -114,6 +115,20 @@ public class ProfileActivity extends AppCompatActivity
                             {
                                 current_state="request_sent";
                                 sendChatRequestButton.setText("Cancel Chat Request");
+                            }
+                            else if(request_type.equals("received"))
+                            {
+                                current_state="request_received";
+                                sendChatRequestButton.setText("Accept Chat Request");
+                                cancelChatRequestButton.setVisibility(View.VISIBLE);
+                                cancelChatRequestButton.setEnabled(true);
+
+                                cancelChatRequestButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        cancelChatRequest();
+                                    }
+                                });
                             }
                         }
 
@@ -210,6 +225,9 @@ public class ProfileActivity extends AppCompatActivity
                                                 sendChatRequestButton.setEnabled(true);
                                                 current_state="new";
                                                 sendChatRequestButton.setText("Send Chat Request");
+
+                                                cancelChatRequestButton.setVisibility(View.INVISIBLE);
+                                                cancelChatRequestButton.setEnabled(false);
                                             }
                                         }
                                     });
