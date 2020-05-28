@@ -27,7 +27,7 @@ public class ProfileActivity extends AppCompatActivity
     CircleImageView userProfileImage;
     TextView  userProfileName, userProfileStatus;
     Button sendChatRequestButton,cancelChatRequestButton;
-    DatabaseReference userRef,chatRequestRef;
+    DatabaseReference userRef,chatRequestRef,contactsRef;
     FirebaseAuth userAuth;
 
     @Override
@@ -48,6 +48,10 @@ public class ProfileActivity extends AppCompatActivity
 
         userRef= FirebaseDatabase.getInstance().getReference().child("User");
         chatRequestRef=FirebaseDatabase.getInstance().getReference().child("Chat Requests");
+        //for contacts that show all accepted friends
+        contactsRef=FirebaseDatabase.getInstance().getReference().child("Contacts");
+
+
         userAuth=FirebaseAuth.getInstance();
         senderUserID=userAuth.getCurrentUser().getUid();
 
@@ -131,6 +135,27 @@ public class ProfileActivity extends AppCompatActivity
                                 });
                             }
                         }
+                        else
+                        {
+                            contactsRef.child(senderUserID)
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                        {
+                                            if(dataSnapshot.hasChild(receiverUserID))
+                                            {
+                                                current_state="friends";
+                                                sendChatRequestButton.setText("Remove from Contact");
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+                        }
 
                     }
 
@@ -157,6 +182,10 @@ public class ProfileActivity extends AppCompatActivity
                     {
                         cancelChatRequest();
                     }
+                    if(current_state.equals("request_received"))
+                    {
+                        AcceptChatRequest();
+                    }
 
                 }
             });
@@ -166,6 +195,7 @@ public class ProfileActivity extends AppCompatActivity
             sendChatRequestButton.setVisibility(View.INVISIBLE);
         }
     }
+
 
 
 
@@ -235,4 +265,61 @@ public class ProfileActivity extends AppCompatActivity
                     }
                 });
     }
+
+    private void AcceptChatRequest()
+    {
+        contactsRef.child(senderUserID).child(receiverUserID)
+                .child("Contacts").setValue("saved")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if(task.isSuccessful())
+                        {
+                            contactsRef.child(receiverUserID).child(senderUserID)
+                                    .child("Contacts").setValue("saved")
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            if(task.isSuccessful())
+                                            {
+                                                //now contacts id saved the we have to remove records from Chat Requests
+                                                chatRequestRef.child(senderUserID).child(receiverUserID)
+                                                        .removeValue()
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task)
+                                                            {
+                                                                if(task.isSuccessful())
+                                                                {
+                                                                    chatRequestRef.child(receiverUserID).child(senderUserID)
+                                                                            .removeValue()
+                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                @Override
+                                                                                public void onComplete(@NonNull Task<Void> task)
+                                                                                {
+                                                                                    sendChatRequestButton.setEnabled(true);
+                                                                                    current_state="friends";
+                                                                                    sendChatRequestButton.setText("Remove from Contact");
+
+                                                                                    cancelChatRequestButton.setVisibility(View.INVISIBLE);
+                                                                                    cancelChatRequestButton.setEnabled(false);
+
+                                                                                }
+                                                                            });
+                                                                }
+                                                            }
+                                                        });
+
+                                            }
+                                        }
+                                    });
+
+                        }
+                    }
+                });
+    }
+
+
 }
