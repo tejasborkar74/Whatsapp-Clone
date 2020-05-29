@@ -17,10 +17,11 @@
         android:src="@drawable/profile_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    app:civ_border_width="2dp"
-    app:civ_border_color="#000000"
-    />
+        app:layout_constraintTop_toTopOf="parent"
+        app:civ_border_width="3dp"
+        
+        />
+
 
 
     <EditText

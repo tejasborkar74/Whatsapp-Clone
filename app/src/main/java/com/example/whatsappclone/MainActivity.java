@@ -63,8 +63,20 @@ public class MainActivity extends AppCompatActivity {
                 sendUserToGroupChat();
             }
         });
+        contactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendUserToContact();
+            }
+        });
 
 
+    }
+
+    private void sendUserToContact()
+    {
+        Intent ContactIntent= new Intent(getApplicationContext(),ContactsActivity.class);
+        startActivity(ContactIntent);
     }
 
 

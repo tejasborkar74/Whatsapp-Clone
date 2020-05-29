@@ -92,8 +92,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     //for getting result from gallaery
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
+
+        //include cropper laibrary
         if(requestCode==GalleryPick && resultCode==RESULT_OK &&  data!=null)
         {
             Uri ImageUri=data.getData();
@@ -103,6 +106,8 @@ public class SettingsActivity extends AppCompatActivity {
                     .setAspectRatio(1,1)
                     .start(this);
         }
+
+        //click crop
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE)
         {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
@@ -110,15 +115,57 @@ public class SettingsActivity extends AppCompatActivity {
             if(resultCode==RESULT_OK)
             {
 
-                loadingBar.setTitle("Set Profile Image");
-                loadingBar.setMessage("Please wait...");
-                loadingBar.setCanceledOnTouchOutside(false);
-                loadingBar.show();
+//                loadingBar.setTitle("Set Profile Image");
+//                loadingBar.setMessage("Please wait...");
+//                loadingBar.setCanceledOnTouchOutside(false);
+//                loadingBar.show();
 
                 //this resultURI contain croped image
                 Uri resultURI=result.getUri();
 
                 final StorageReference filePath = UserProfileImagesRef.child(CurrentUserID + ".jpg");
+
+//                filePath.putFile(resultURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
+//                    {
+//                        if(task.isSuccessful())
+//                        {
+//                            Toast.makeText(SettingsActivity.this, "Profile Image uploaded successfully", Toast.LENGTH_SHORT).show();
+//
+//                            String downloadURL = task.getResult().getStorage().getDownloadUrl().toString();
+//
+//                            rootRef.child("User").child(CurrentUserID).child("image")
+//                                    .setValue(downloadURL)
+//                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                        @Override
+//                                        public void onComplete(@NonNull Task<Void> task)
+//                                        {
+//                                            if(task.isSuccessful())
+//                                            {
+//                                                Toast.makeText(SettingsActivity.this, "image saved in DataBase", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                            else
+//                                            {
+//                                                String message = task.getException().getMessage();
+//                                                Toast.makeText(SettingsActivity.this, "Error Occurred..." + message, Toast.LENGTH_SHORT).show();
+//                                                //loadingBar.dismiss();
+//
+//                                            }
+//
+//                                        }
+//                                    });
+//
+//                        }
+//                        else
+//                        {
+//                            String error= task.getException().toString();
+//                            Toast.makeText(SettingsActivity.this, "ERROR: " + error, Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                    }
+//                });
+
 
                 filePath.putFile(resultURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
                 {
@@ -153,7 +200,12 @@ public class SettingsActivity extends AppCompatActivity {
 
                     }
                 });
+
+
+
+
             }
+
         }
     }
 
