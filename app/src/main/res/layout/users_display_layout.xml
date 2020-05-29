@@ -12,8 +12,8 @@
         >
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/users_profile_image"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:src="@drawable/profile_image"
         />
 
@@ -54,16 +54,48 @@
 
             <TextView
                 android:id="@+id/users_profile_status"
-                android:layout_width="220dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="User Status"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/white"
                 android:textSize="15dp"
                 android:textStyle="normal"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginStart="15dp"
                 />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    android:id="@+id/accept_request_button"
+                    android:layout_width="70dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="15dp"
+                    android:text="Accept"
+                    android:layout_marginTop="2dp"
+                    android:textAllCaps="false"
+                    android:background="@android:color/holo_green_light"
+                    android:visibility="invisible"
+                    />
+                <Button
+                    android:id="@+id/decline_request_button"
+                    android:layout_width="70dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="15dp"
+                    android:text="Decline"
+                    android:layout_marginTop="2dp"
+                    android:textAllCaps="false"
+                    android:background="@android:color/holo_red_dark"
+                    android:textColor="@android:color/white"
+                    android:visibility="invisible"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 

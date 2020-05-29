@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser currentUser;
     FirebaseAuth userAuth;
     DatabaseReference rootRef;
-    Button chatButton,groupChatButton,contactButton;
+    Button chatButton,groupChatButton,contactButton,friendRequestButton;
 
 
 
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         chatButton=(Button)findViewById(R.id.chatButton);
         groupChatButton=(Button)findViewById(R.id.groupChatButton);
         contactButton=(Button)findViewById(R.id.contactButton);
+        friendRequestButton=(Button)findViewById(R.id.friendRequestButton);
 
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,8 +70,21 @@ public class MainActivity extends AppCompatActivity {
                 sendUserToContact();
             }
         });
+        friendRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                senToFriendRequestPage();
+            }
+        });
 
 
+
+    }
+
+    private void senToFriendRequestPage()
+    {
+        Intent friendIntent= new Intent(getApplicationContext(),FriendRequestActivity.class);
+        startActivity(friendIntent);
     }
 
     private void sendUserToContact()
