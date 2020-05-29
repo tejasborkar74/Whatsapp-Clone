@@ -4,27 +4,47 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.ColorSpace;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FriendRequestActivity extends AppCompatActivity {
 
     DatabaseReference rootRef;//for menu
     FirebaseAuth userAuth;//for menu
+
+    DatabaseReference chatRequestRef,usersRef;
+    String currentUserID;
+    RecyclerView myRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +54,135 @@ public class FriendRequestActivity extends AppCompatActivity {
         ActionBar actionBar =getSupportActionBar();
         actionBar.setTitle("Friend Requests");
 
+        myRecyclerView=(RecyclerView)findViewById(R.id.recyclerView);
+        myRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         rootRef= FirebaseDatabase.getInstance().getReference();//for menu
         userAuth=FirebaseAuth.getInstance();//for menu
+
+        chatRequestRef=FirebaseDatabase.getInstance().getReference().child("Chat Requests");
+        usersRef=FirebaseDatabase.getInstance().getReference().child("User");
+
+        currentUserID=userAuth.getCurrentUser().getUid();
+
 
 
     }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        FirebaseRecyclerOptions<Contacts> options =
+                new FirebaseRecyclerOptions.Builder<Contacts>()
+                .setQuery(chatRequestRef.child(currentUserID),Contacts.class)
+                .build();
+
+
+        FirebaseRecyclerAdapter<Contacts,RequestViewHolder> adapter=
+                new FirebaseRecyclerAdapter<Contacts,RequestViewHolder>(options) {
+                    @Override
+                    protected void onBindViewHolder(@NonNull final RequestViewHolder holder, int position, @NonNull Contacts model)
+                    {
+                        holder.itemView.findViewById(R.id.accept_request_button).setVisibility(View.VISIBLE);
+                        holder.itemView.findViewById(R.id.decline_request_button).setVisibility(View.VISIBLE);
+
+                        //key of users listed under current user
+                        final String list_userID=getRef(position).getKey();
+
+                        //sent or received
+                        DatabaseReference getTypeRef=getRef(position).child("request_type").getRef();
+
+                        getTypeRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                            {
+                                if(dataSnapshot.exists())
+                                {
+                                    String type=dataSnapshot.getValue().toString();
+
+                                    if(type.equals("received"))
+                                    {
+                                        usersRef.child(list_userID).addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                            {
+                                                if(dataSnapshot.hasChild("image"))
+                                                {
+                                                    String requestuserName=dataSnapshot.child("name").getValue().toString();
+                                                    String requestuserStatus=dataSnapshot.child("status").getValue().toString();
+                                                    String requestProfileImage=dataSnapshot.child("image").getValue().toString();
+
+                                                    holder.userName.setText(requestuserName);
+                                                    holder.userStatus.setText(requestuserStatus);
+                                                    Picasso.get().load(requestProfileImage).into(holder.profileImage);
+
+                                                }
+                                                else
+                                                {
+                                                    String requestuserName=dataSnapshot.child("name").getValue().toString();
+                                                    String requestuserStatus=dataSnapshot.child("status").getValue().toString();
+
+                                                    holder.userName.setText(requestuserName);
+                                                    holder.userStatus.setText(requestuserStatus);
+
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                    @NonNull
+                    @Override
+                    public RequestViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i)
+                    {
+                        //1.
+                        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout,viewGroup,false);
+                        RequestViewHolder holder =new RequestViewHolder(view);
+                        return holder;
+
+                    }
+                };
+
+        myRecyclerView.setAdapter(adapter);
+        adapter.startListening();
+
+    }
+
+    public static class RequestViewHolder extends RecyclerView.ViewHolder
+    {
+        TextView userName,userStatus;
+        CircleImageView profileImage;
+        Button acceptButton,cancelButton;
+        public RequestViewHolder(@NonNull View itemView)
+        {
+            super(itemView);
+
+
+            userName=itemView.findViewById(R.id.users_profile_name);
+            userStatus=itemView.findViewById(R.id.users_profile_status);
+            profileImage=itemView.findViewById(R.id.users_profile_image);
+            acceptButton=itemView.findViewById(R.id.accept_request_button);
+            cancelButton=itemView.findViewById(R.id.decline_request_button);
+
+
+        }
+    }
 
     //===========================================================MENU=========================================================
     @Override
