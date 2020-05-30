@@ -42,7 +42,7 @@ public class FriendRequestActivity extends AppCompatActivity {
     DatabaseReference rootRef;//for menu
     FirebaseAuth userAuth;//for menu
 
-    DatabaseReference chatRequestRef,usersRef;
+    DatabaseReference chatRequestRef,usersRef,contactRef;
     String currentUserID;
     RecyclerView myRecyclerView;
 
@@ -62,7 +62,7 @@ public class FriendRequestActivity extends AppCompatActivity {
 
         chatRequestRef=FirebaseDatabase.getInstance().getReference().child("Chat Requests");
         usersRef=FirebaseDatabase.getInstance().getReference().child("User");
-
+        contactRef=FirebaseDatabase.getInstance().getReference().child("Contacts");
         currentUserID=userAuth.getCurrentUser().getUid();
 
 
@@ -109,24 +109,121 @@ public class FriendRequestActivity extends AppCompatActivity {
                                             {
                                                 if(dataSnapshot.hasChild("image"))
                                                 {
-                                                    String requestuserName=dataSnapshot.child("name").getValue().toString();
-                                                    String requestuserStatus=dataSnapshot.child("status").getValue().toString();
-                                                    String requestProfileImage=dataSnapshot.child("image").getValue().toString();
+                                                  String requestProfileImage=dataSnapshot.child("image").getValue().toString();
 
-                                                    holder.userName.setText(requestuserName);
-                                                    holder.userStatus.setText(requestuserStatus);
-                                                    Picasso.get().load(requestProfileImage).into(holder.profileImage);
+                                                  Picasso.get().load(requestProfileImage).into(holder.profileImage);
 
                                                 }
-                                                else
-                                                {
+
                                                     String requestuserName=dataSnapshot.child("name").getValue().toString();
                                                     String requestuserStatus=dataSnapshot.child("status").getValue().toString();
 
                                                     holder.userName.setText(requestuserName);
-                                                    holder.userStatus.setText(requestuserStatus);
+                                                    holder.userStatus.setText("Whats to connect with you");
 
-                                                }
+
+
+                                                //if click Accept
+
+                                                holder.acceptButton.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view)
+                                                    {
+                                                        contactRef.child(currentUserID).child(list_userID).child("Contacts").setValue("saved")
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task)
+                                                                    {
+                                                                        if(task.isSuccessful())
+                                                                        {
+                                                                            contactRef.child(list_userID).child(currentUserID).child("Contacts").setValue("saved")
+                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onComplete(@NonNull Task<Void> task)
+                                                                                        {
+                                                                                            if(task.isSuccessful())
+                                                                                            {
+                                                                                                //Till now contacts has been saved ...but we have to remove this request to display
+
+                                                                                                chatRequestRef.child(currentUserID).child(list_userID).removeValue()
+                                                                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                            @Override
+                                                                                                            public void onComplete(@NonNull Task<Void> task)
+                                                                                                            {
+                                                                                                                if(task.isSuccessful())
+                                                                                                                {
+                                                                                                                    chatRequestRef.child(list_userID).child(currentUserID).removeValue()
+                                                                                                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                                                @Override
+                                                                                                                                public void onComplete(@NonNull Task<Void> task)
+                                                                                                                                {
+                                                                                                                                    if(task.isSuccessful())
+                                                                                                                                    {
+                                                                                                                                        Toast.makeText(FriendRequestActivity.this, "Chat Request Accepted... New Contact added", Toast.LENGTH_SHORT).show();
+
+                                                                                                                                    }
+
+                                                                                                                                }
+                                                                                                                            });
+
+                                                                                                                }
+
+                                                                                                            }
+                                                                                                        });
+                                                                                            }
+
+                                                                                        }
+                                                                                    });
+
+                                                                        }
+
+
+                                                                    }
+                                                                });
+
+
+                                                    }
+                                                });
+
+
+                                                //if clicked on Decline button
+
+                                                holder.cancelButton.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view)
+                                                    {
+                                                        //remove from chat request
+
+                                                        chatRequestRef.child(currentUserID).child(list_userID).removeValue()
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task)
+                                                                    {
+                                                                        if(task.isSuccessful())
+                                                                        {
+                                                                            chatRequestRef.child(list_userID).child(currentUserID).removeValue()
+                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onComplete(@NonNull Task<Void> task)
+                                                                                        {
+                                                                                            if(task.isSuccessful())
+                                                                                            {
+                                                                                                Toast.makeText(FriendRequestActivity.this, "Chat Request Decline", Toast.LENGTH_SHORT).show();
+
+                                                                                            }
+
+                                                                                        }
+                                                                                    });
+
+                                                                        }
+
+                                                                    }
+                                                                });
+
+
+                                                    }
+                                                });
+
 
                                             }
 
