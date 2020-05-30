@@ -55,6 +55,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         ActionBar actionBar= getSupportActionBar();
         actionBar.setTitle("Settings");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(true);
+
 
 
         UserName=(EditText)findViewById(R.id.UserNameEditText);
