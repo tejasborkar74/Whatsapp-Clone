@@ -48,6 +48,7 @@ public class ChatsMainActivity extends AppCompatActivity {
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,23 +86,44 @@ public class ChatsMainActivity extends AppCompatActivity {
                     @Override
                     protected void onBindViewHolder(@NonNull final ChatsViewHolder holder, int position, @NonNull Contacts model)
                     {
-                        String friendsIDs= getRef(position).getKey();
+                        final String friendsIDs= getRef(position).getKey();
+                        final String[] friendImage = {"default_image"};
 
                         usersRef.child(friendsIDs).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
                             {
-                                if(dataSnapshot.hasChild("image"))
+                                if(dataSnapshot.exists())
                                 {
-                                    String friendImage=dataSnapshot.child("image").getValue().toString();
-                                    Picasso.get().load(friendImage).into(holder.profileImage);
+                                    if(dataSnapshot.hasChild("image"))
+                                    {
+                                         friendImage[0] =dataSnapshot.child("image").getValue().toString();
+                                        Picasso.get().load(friendImage[0]).into(holder.profileImage);
+                                    }
+
+                                    final String friendName=dataSnapshot.child("name").getValue().toString();
+                                    String friendStatus=dataSnapshot.child("status").getValue().toString();
+
+                                    holder.userName.setText(friendName);
+                                    holder.userStatus.setText("Last Seen: " + "\n" + "Date " +"Time"  );
+
+                                    //now on click on items
+
+                                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view)
+                                        {
+                                            Intent privateChatTntent= new Intent(getApplicationContext(),PrivateChattingActivity.class);
+
+                                            privateChatTntent.putExtra("friend_ID",friendsIDs);
+                                            privateChatTntent.putExtra("friend_Name",friendName);
+                                            privateChatTntent.putExtra("friend_image", friendImage[0]);
+
+                                            startActivity(privateChatTntent);
+                                        }
+                                    });
                                 }
 
-                                String friendName=dataSnapshot.child("name").getValue().toString();
-                                String friendStatus=dataSnapshot.child("status").getValue().toString();
-
-                                holder.userName.setText(friendName);
-                                holder.userStatus.setText("Last Seen: " + "\n" + "Date " +"Time"  );
 
                             }
 
@@ -109,7 +131,7 @@ public class ChatsMainActivity extends AppCompatActivity {
                             public void onCancelled(@NonNull DatabaseError databaseError) {
 
                             }
-                        });  
+                        });
 
 
                     }
