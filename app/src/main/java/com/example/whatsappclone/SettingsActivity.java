@@ -55,6 +55,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         ActionBar actionBar= getSupportActionBar();
         actionBar.setTitle("Settings");
+
+
         UserName=(EditText)findViewById(R.id.UserNameEditText);
         UserStatus=(EditText)findViewById(R.id.StatusEditText);
         ProfilePic=(ImageView)findViewById(R.id.ProfileImage);
@@ -115,56 +117,16 @@ public class SettingsActivity extends AppCompatActivity {
             if(resultCode==RESULT_OK)
             {
 
-//                loadingBar.setTitle("Set Profile Image");
-//                loadingBar.setMessage("Please wait...");
-//                loadingBar.setCanceledOnTouchOutside(false);
-//                loadingBar.show();
+                loadingBar.setTitle("Updating Profile Image");
+                loadingBar.setMessage("Please Wait...");
+                loadingBar.setCanceledOnTouchOutside(false);
+                loadingBar.show();
 
-                //this resultURI contain croped image
+
                 Uri resultURI=result.getUri();
 
                 final StorageReference filePath = UserProfileImagesRef.child(CurrentUserID + ".jpg");
 
-//                filePath.putFile(resultURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task)
-//                    {
-//                        if(task.isSuccessful())
-//                        {
-//                            Toast.makeText(SettingsActivity.this, "Profile Image uploaded successfully", Toast.LENGTH_SHORT).show();
-//
-//                            String downloadURL = task.getResult().getStorage().getDownloadUrl().toString();
-//
-//                            rootRef.child("User").child(CurrentUserID).child("image")
-//                                    .setValue(downloadURL)
-//                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                        @Override
-//                                        public void onComplete(@NonNull Task<Void> task)
-//                                        {
-//                                            if(task.isSuccessful())
-//                                            {
-//                                                Toast.makeText(SettingsActivity.this, "image saved in DataBase", Toast.LENGTH_SHORT).show();
-//                                            }
-//                                            else
-//                                            {
-//                                                String message = task.getException().getMessage();
-//                                                Toast.makeText(SettingsActivity.this, "Error Occurred..." + message, Toast.LENGTH_SHORT).show();
-//                                                //loadingBar.dismiss();
-//
-//                                            }
-//
-//                                        }
-//                                    });
-//
-//                        }
-//                        else
-//                        {
-//                            String error= task.getException().toString();
-//                            Toast.makeText(SettingsActivity.this, "ERROR: " + error, Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                    }
-//                });
 
 
                 filePath.putFile(resultURI).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>()
@@ -267,20 +229,20 @@ public class SettingsActivity extends AppCompatActivity {
         {
 
             //we store the info in database...
-            HashMap<String,String> profileMap = new HashMap<>();
+            HashMap<String,Object> profileMap = new HashMap<>();
             profileMap.put("uid",CurrentUserID);
             profileMap.put("name",setUserName);
             profileMap.put("status",setStatus);
 
             //By using rootRef we are going to save this
 
-            rootRef.child("User").child(CurrentUserID).setValue(profileMap)
+            rootRef.child("User").child(CurrentUserID).updateChildren(profileMap)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
-                                sendUserToMain();
+                              //  sendUserToMain();
                                 Toast.makeText(SettingsActivity.this,"Profile Updated Successfully...",Toast.LENGTH_LONG).show();
                             }
                             else
