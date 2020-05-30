@@ -4,26 +4,47 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+//Here we have all users in contact list...but the difference is that we can chat with them
 
 public class ChatsMainActivity extends AppCompatActivity {
     DatabaseReference rootRef;//for menu
     FirebaseAuth userAuth;//for menu
+
+    DatabaseReference chatsRef,usersRef;
+
+    RecyclerView chatsList;
+    String currentUserID;
 
 
 
@@ -38,7 +59,93 @@ public class ChatsMainActivity extends AppCompatActivity {
         rootRef= FirebaseDatabase.getInstance().getReference();//for menu
         userAuth=FirebaseAuth.getInstance();//for menu
 
+        chatsList=(RecyclerView)findViewById(R.id.chats_list);
+        chatsList.setLayoutManager(new LinearLayoutManager(this));
 
+        currentUserID=userAuth.getCurrentUser().getUid();
+
+        chatsRef=FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserID);
+        usersRef=FirebaseDatabase.getInstance().getReference().child("User");
+
+    }
+
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+
+        FirebaseRecyclerOptions<Contacts> options =
+                new FirebaseRecyclerOptions.Builder<Contacts>()
+                .setQuery(chatsRef,Contacts.class)
+                .build();
+
+        FirebaseRecyclerAdapter<Contacts,ChatsViewHolder> adapter=
+                new FirebaseRecyclerAdapter<Contacts, ChatsViewHolder>(options) {
+                    @Override
+                    protected void onBindViewHolder(@NonNull final ChatsViewHolder holder, int position, @NonNull Contacts model)
+                    {
+                        String friendsIDs= getRef(position).getKey();
+
+                        usersRef.child(friendsIDs).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                            {
+                                if(dataSnapshot.hasChild("image"))
+                                {
+                                    String friendImage=dataSnapshot.child("image").getValue().toString();
+                                    Picasso.get().load(friendImage).into(holder.profileImage);
+                                }
+
+                                String friendName=dataSnapshot.child("name").getValue().toString();
+                                String friendStatus=dataSnapshot.child("status").getValue().toString();
+
+                                holder.userName.setText(friendName);
+                                holder.userStatus.setText("Last Seen: " + "\n" + "Date " +"Time"  );
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });  
+
+
+                    }
+
+                    @NonNull
+                    @Override
+                    public ChatsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i)
+                    {
+                        //Access layout
+
+                        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.users_display_layout,viewGroup,false);
+
+                        return new ChatsViewHolder(view);
+
+                    }
+                };
+
+        chatsList.setAdapter(adapter);
+        adapter.startListening();
+
+    }
+
+    public static class ChatsViewHolder extends RecyclerView.ViewHolder
+    {
+        CircleImageView profileImage;
+        TextView userStatus,userName;
+
+        public ChatsViewHolder(@NonNull View itemView)
+        {
+            super(itemView);
+
+            profileImage=itemView.findViewById(R.id.users_profile_image);
+            userName=itemView.findViewById(R.id.users_profile_name);
+            userStatus=itemView.findViewById(R.id.users_profile_status);
+
+        }
     }
 
     //===========================================================MENU=========================================================

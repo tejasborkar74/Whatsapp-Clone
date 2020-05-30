@@ -39,7 +39,7 @@ public class ContactsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         ActionBar actionBar =getSupportActionBar();
-        actionBar.setTitle("Contacts");
+        actionBar.setTitle("Contact list");
 
         myContactList=(RecyclerView)findViewById(R.id.contactList);
         myContactList.setLayoutManager(new LinearLayoutManager(this));
