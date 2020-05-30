@@ -42,7 +42,7 @@
 
             />
         <ImageView
-            android:id="@+id/send_message_button"
+            android:id="@+id/send_message_btn"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="1dp"
