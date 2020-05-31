@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".PrivateChattingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ChatsMainActivity">
         </activity>
 
         <activity android:name=".FriendRequestActivity" />
