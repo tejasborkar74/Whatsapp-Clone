@@ -8,8 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -202,7 +206,24 @@ public class GroupChattingActivity extends AppCompatActivity {
             String chatName=(String) ((DataSnapshot)iterator.next()).getValue();
             String chatTime=(String) ((DataSnapshot)iterator.next()).getValue();
 
-            textChatDisplay.append(chatName + "\n" + chatMessage + "\n" + chatDate + "      " + chatTime + "\n\n\n");
+            SpannableString ss1=  new SpannableString(chatName);
+            int e=chatName.length();
+            ss1.setSpan(new RelativeSizeSpan(01f), 0, e, 0); // set size
+            ss1.setSpan(new ForegroundColorSpan(Color.GREEN), 0, e, 0);
+
+            textChatDisplay.append(ss1);
+
+            textChatDisplay.append(" \n" + chatMessage + "\n" );
+
+            String dateTime= chatDate + "      " + chatTime;
+
+            SpannableString date=  new SpannableString(dateTime);
+            e=dateTime.length();
+            date.setSpan(new RelativeSizeSpan(0.7f), 0, e, 0); // set size
+            date.setSpan(new ForegroundColorSpan(Color.RED), 0, e, 0);
+
+
+            textChatDisplay.append(date + "\n\n\n");
 
         }
 

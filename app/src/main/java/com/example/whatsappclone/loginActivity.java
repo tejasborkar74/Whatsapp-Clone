@@ -109,7 +109,7 @@ public class loginActivity extends AppCompatActivity {
 
     private void sendUserToMain() {
         Intent toMainInIntent= new Intent(loginActivity.this,MainActivity.class);
-        toMainInIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        toMainInIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);//user can not go back to login
         startActivity(toMainInIntent);
         finish();
     }
