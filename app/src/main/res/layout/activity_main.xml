@@ -51,7 +51,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="50dp"
                 android:background="#322B2B"
-                android:text="Group Chats"
+                android:text="Public Chats"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
 

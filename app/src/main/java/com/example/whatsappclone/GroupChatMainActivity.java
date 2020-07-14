@@ -49,7 +49,7 @@ public class GroupChatMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_group_chat_main);
 
         ActionBar actionBar= getSupportActionBar();
-        actionBar.setTitle("Group Chats");
+        actionBar.setTitle("Public Group Chats");
         userAuth=FirebaseAuth.getInstance();
         rootRef= FirebaseDatabase.getInstance().getReference();
 

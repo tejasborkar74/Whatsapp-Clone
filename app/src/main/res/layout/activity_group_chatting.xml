@@ -50,6 +50,7 @@
         android:layout_marginBottom="5dp"
         android:background="@drawable/edit_text_border"
         android:backgroundTint="#FFFFFF"
+
         android:ems="10"
         android:hint="Type a message"
         android:inputType="textPersonName"
