@@ -233,6 +233,80 @@ public class FriendRequestActivity extends AppCompatActivity {
                                             }
                                         });
                                     }
+
+                                    else if(type.equals("sent"))
+                                    {
+                                        Button request_sent_button = holder.itemView.findViewById(R.id.accept_request_button);
+
+                                        request_sent_button.setText(" Cancel");
+                                        holder.itemView.findViewById(R.id.decline_request_button).setVisibility(View.INVISIBLE);
+
+
+                                        usersRef.child(list_userID).addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                            {
+                                                if(dataSnapshot.hasChild("image"))
+                                                {
+                                                    String requestProfileImage=dataSnapshot.child("image").getValue().toString();
+
+                                                    Picasso.get().load(requestProfileImage).into(holder.profileImage);
+
+                                                }
+
+                                                String requestuserName=dataSnapshot.child("name").getValue().toString();
+                                                String requestuserStatus=dataSnapshot.child("status").getValue().toString();
+
+                                                holder.userName.setText(requestuserName);
+                                                holder.userStatus.setText("You have sent friend request");
+
+                                                //cancel sent request
+
+                                                holder.acceptButton.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View view)
+                                                    {
+                                                        //remove from chat request
+
+                                                        chatRequestRef.child(currentUserID).child(list_userID).removeValue()
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task)
+                                                                    {
+                                                                        if(task.isSuccessful())
+                                                                        {
+                                                                            chatRequestRef.child(list_userID).child(currentUserID).removeValue()
+                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onComplete(@NonNull Task<Void> task)
+                                                                                        {
+                                                                                            if(task.isSuccessful())
+                                                                                            {
+                                                                                                Toast.makeText(FriendRequestActivity.this, "You have cancelled the Friend Request", Toast.LENGTH_SHORT).show();
+
+                                                                                            }
+
+                                                                                        }
+                                                                                    });
+
+                                                                        }
+
+                                                                    }
+                                                                });
+
+
+                                                    }
+                                                });
+
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                    }
                                 }
 
                             }
