@@ -90,6 +90,7 @@ public class PrivateChattingActivity extends AppCompatActivity
 
         userName.setText(messageReceiverName);
         Picasso.get().load(messageReceiverImage).placeholder(R.drawable.profile_image).into(userImage);
+        userLastSeen.setVisibility(View.INVISIBLE);
 
 
         sendMessageButton.setOnClickListener(new View.OnClickListener() {

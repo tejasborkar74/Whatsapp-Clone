@@ -101,7 +101,7 @@ public class SettingsActivity extends AppCompatActivity {
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        //include cropper laibrary
+        //include cropper laibrary**
         if(requestCode==GalleryPick && resultCode==RESULT_OK &&  data!=null)
         {
             Uri ImageUri=data.getData();

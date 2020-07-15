@@ -80,7 +80,7 @@ public class FriendRequestActivity extends AppCompatActivity {
 
 
         FirebaseRecyclerAdapter<Contacts,RequestViewHolder> adapter=
-                new FirebaseRecyclerAdapter<Contacts,RequestViewHolder>(options) {
+                new FirebaseRecyclerAdapter <Contacts,RequestViewHolder>(options) {
                     @Override
                     protected void onBindViewHolder(@NonNull final RequestViewHolder holder, int position, @NonNull Contacts model)
                     {

@@ -210,7 +210,7 @@ public class GroupChattingActivity extends AppCompatActivity {
             int e=chatName.length();
             ss1.setSpan(new RelativeSizeSpan(0.8f), 0, e, 0); // set size
             ss1.setSpan(new ForegroundColorSpan(Color.GREEN), 0, e, 0);
- 
+
             textChatDisplay.append(ss1);
 
             textChatDisplay.append(" \n" + chatMessage + "\n\n\n" );

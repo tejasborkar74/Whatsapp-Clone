@@ -105,7 +105,7 @@ public class ChatsMainActivity extends AppCompatActivity {
                                     String friendStatus=dataSnapshot.child("status").getValue().toString();
 
                                     holder.userName.setText(friendName);
-                                    holder.userStatus.setText("Last Seen: " + "\n" + "Date " +"Time"  );
+                                    holder.userStatus.setText(friendStatus);
 
                                     //now on click on items
 
