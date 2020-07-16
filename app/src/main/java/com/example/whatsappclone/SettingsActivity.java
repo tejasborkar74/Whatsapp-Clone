@@ -245,7 +245,7 @@ public class SettingsActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
                             {
-                              //  sendUserToMain();
+                                //  sendUserToMain();
                                 Toast.makeText(SettingsActivity.this,"Profile Updated Successfully...",Toast.LENGTH_LONG).show();
                             }
                             else

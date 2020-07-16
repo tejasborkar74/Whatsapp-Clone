@@ -157,12 +157,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-         super.onOptionsItemSelected(item);
+        super.onOptionsItemSelected(item);
 
-         if(item.getItemId()==R.id.Settings)
-         {
-             sendUserToTempSettings();
-         }
+        if(item.getItemId()==R.id.Settings)
+        {
+            sendUserToTempSettings();
+        }
         if(item.getItemId()==R.id.Log_out)
         {
             userAuth.signOut();
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         {
             RequestNewGroup();
         }
-    return true;
+        return true;
     }
 
 
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-   public void sendUserToTempSettings() {
+    public void sendUserToTempSettings() {
         Intent in= new Intent(getApplicationContext(),SettingsActivity.class);
         startActivity(in);
 

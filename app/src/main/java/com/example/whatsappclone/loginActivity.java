@@ -39,7 +39,7 @@ public class loginActivity extends AppCompatActivity {
         signInButton=(Button)findViewById(R.id.SignupButton);
         userEmail=(EditText)findViewById(R.id.emailEditText);
         userPassword=(EditText)findViewById(R.id.passwordEditText);
-        ForgetPasswordLink=(TextView)findViewById(R.id.ForgePasswordtTextView);
+       // ForgetPasswordLink=(TextView)findViewById(R.id.ForgePasswordtTextView);
         userAuth=FirebaseAuth.getInstance();
         progressDialog=new ProgressDialog(this);
 

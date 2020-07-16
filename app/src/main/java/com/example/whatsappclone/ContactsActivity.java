@@ -56,15 +56,15 @@ public class ContactsActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseRecyclerOptions options = new FirebaseRecyclerOptions.Builder<Contacts>()
-                                                .setQuery(contactRef,Contacts.class)
-                                                .build();
+                .setQuery(contactRef,Contacts.class)
+                .build();
 
         FirebaseRecyclerAdapter<Contacts, ContactViewHolder> adapter
                 = new FirebaseRecyclerAdapter<Contacts, ContactViewHolder>(options)
         {
             @Override
             protected void onBindViewHolder(@NonNull final ContactViewHolder holder, int position, @NonNull Contacts model)
-              {
+            {
 
                 //2. retrieve name status and image and set and display
                 final String friendIDs = getRef(position).getKey();
@@ -85,14 +85,14 @@ public class ContactsActivity extends AppCompatActivity {
                             Picasso.get().load(userImage).placeholder(R.drawable.profile_image).into(holder.profileImage);
 
                         }
-                       else
+                        else
                         {
-                                String profileName = (String) dataSnapshot.child("name").getValue();
-                                String profileStatus = (String) dataSnapshot.child("status").getValue();
+                            String profileName = (String) dataSnapshot.child("name").getValue();
+                            String profileStatus = (String) dataSnapshot.child("status").getValue();
 
 
-                                holder.userName.setText(profileName);
-                                holder.userStatus.setText(profileStatus);
+                            holder.userName.setText(profileName);
+                            holder.userStatus.setText(profileStatus);
 
                         }
 
