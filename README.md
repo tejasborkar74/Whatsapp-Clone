@@ -77,9 +77,9 @@
 * Find Friend : Find Friends and send them Friend Request
 
 
-<img src="https://user-images.githubusercontent.com/55979765/126686974-5fc37fed-fdbd-4e38-8c93-82351a0732fb.jpeg" alt="alt text" width="300" align="left" >
-<img src="https://user-images.githubusercontent.com/55979765/126687009-5d004b0c-403f-4f64-bb5d-8b54c63f99fa.jpeg" alt="alt text" width="300" align="left" >
-<img src="https://user-images.githubusercontent.com/55979765/126687039-e9ff1d1d-eed9-47e9-9592-97e1b37726b9.jpeg" alt="alt text" width="300" >
+<img src="https://user-images.githubusercontent.com/55979765/126686974-5fc37fed-fdbd-4e38-8c93-82351a0732fb.jpeg" alt="alt text" width="250" align="left" >
+<img src="https://user-images.githubusercontent.com/55979765/126687009-5d004b0c-403f-4f64-bb5d-8b54c63f99fa.jpeg" alt="alt text" width="250" align="left" >
+<img src="https://user-images.githubusercontent.com/55979765/126687039-e9ff1d1d-eed9-47e9-9592-97e1b37726b9.jpeg" alt="alt text" width="250" >
 
 
 
