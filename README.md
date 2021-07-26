@@ -82,4 +82,6 @@
 <img src="https://user-images.githubusercontent.com/55979765/126687039-e9ff1d1d-eed9-47e9-9592-97e1b37726b9.jpeg" alt="alt text" width="250" >
 
 
+##License and Copyright
 
+© Tejas Borkar
